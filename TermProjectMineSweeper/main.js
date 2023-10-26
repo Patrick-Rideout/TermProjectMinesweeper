@@ -7,7 +7,8 @@ const StartGame = () => {
     let gameDiv = document.querySelector("#game");
     gameDiv.innerHTML = "";
     const difficulty = document.querySelector("#difficulty").value;
-    
+    let field;
+
     if (difficulty=="Beginner") {
         field = creatingTheField(10, 81);
     }
@@ -24,7 +25,8 @@ const StartGame = () => {
     colorShuffler = 0;
 
 
-    for (row in field) {
+    for (rowString in field) {
+        let row = parseInt(rowString)
         if (difficulty=="Intermediate" || difficulty=="Expert") {
             if (colorShuffler == 0) {
                 colorShuffler += 1;
@@ -54,12 +56,78 @@ const StartGame = () => {
             
             node.value = field[row][i];
             node.style.fontFamily = 'Courier New, monospace';
-            if (node.value == "1") {
+            if (field[row][i] == "b") {
                 node.addEventListener("click", mine);
+                // Remove
+                node.textContent = "b";    
             }
             else {
                 node.addEventListener("click", safe);
+
+                newNodeValue = 0;
+                
+                // TOP LEFT
+                if (row > 0 && i > 0) {
+                    if (field[row-1][i-1] == "b") {
+                        newNodeValue += 1;
+                    }
+                }
+
+                // TOP
+                if (row > 0) {
+                    if (field[row-1][i] == "b") {
+                        newNodeValue += 1;
+                    }
+                }
+
+                // TOP RIGHT
+                if (row > 0 && i < field.length) {
+                    if (field[row-1][i+1] == "b") {
+                        newNodeValue += 1;
+                    }
+                }
+
+                // LEFT
+                if (i > 0) {
+                    if (field[row][i-1] == "b") {
+                        newNodeValue += 1;
+                    }
+                }
+
+                // RIGHT
+                if (i < field.length) {
+                    if (field[row][i+1] == "b") {
+                        newNodeValue += 1;
+                    }
+                }
+
+                // BOTTOM LEFT
+
+                if (row < field.length && i > 0) {
+                    if (field[row+1][i-1] == "b") {
+                        newNodeValue += 1;
+                    }
+                }
+
+                // BOTTOM
+                if (row < field.length) {
+                    if (field[row+1][i] == "b") {
+                        newNodeValue += 1;
+                    }
+                }
+
+                // BOTTOM RIGHT
+                if (row < field.length && i < field.length) {
+                    if (field[row+1][i+1] == "b") {
+                        newNodeValue += 1;
+                    }
+                }
+
+                node.value = newNodeValue;
+                // Remove
+                node.textContent = newNodeValue;    
             }
+            
             gameDiv.appendChild(node);
             indexNumber += 1
 
@@ -72,13 +140,14 @@ const StartGame = () => {
 
 const startTimer = () => {
     var sec = 0;
-    timer = setInterval(function(){
+    let timer = setInterval(function(){
         document.getElementById('timer').innerHTML = sec;
         sec++;
     }, 1000);
 }
 
 const stopTimer = () => {
+    let timer;
     clearInterval(timer);
 }
 
@@ -99,9 +168,9 @@ function shuffle(array) {
 
 function creatingTheField(bombs, tiles) {
     let arr = [];
-    let = arrRows = []
+    let arrRows = [];
     for (let i = 0; i < bombs; i++) {
-        arr.push("1");
+        arr.push("b");
     }
     for (let i = 0; i < tiles-bombs; i++) {
         arr.push("0");
@@ -121,7 +190,6 @@ const mine = evt => {
 }
 
 const safe = evt => { 
-    
     if (evt.target.style.backgroundColor == "rgb(65, 105, 225)") {
         evt.target.style.backgroundColor = "grey"
     }
@@ -129,6 +197,8 @@ const safe = evt => {
         evt.target.style.backgroundColor = "lightgrey"
     }
     
+
+
 }
 
 const Start = document.getElementById("start");
