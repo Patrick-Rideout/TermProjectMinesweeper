@@ -1,10 +1,10 @@
 const $ = selector => document.querySelector(selector);
 
 const StartGame = () => {
-
+    
     stopTimer()
     startTimer()
-    let gameDiv = $("#game");
+    let gameDiv = document.querySelector("#game");
     gameDiv.innerHTML = "";
     const difficulty = document.querySelector("#difficulty").value;
     
@@ -23,9 +23,8 @@ const StartGame = () => {
     colorCode = 1;
     colorShuffler = 0;
 
-    shuffle(field);
-    let sideLength = Math.sqrt(field.length);
-    for (let i = 0; i < sideLength; i++) {
+
+    for (row in field) {
         if (difficulty=="Intermediate" || difficulty=="Expert") {
             if (colorShuffler == 0) {
                 colorShuffler += 1;
@@ -39,7 +38,7 @@ const StartGame = () => {
         else {
             colorShuffler = 0;
         }
-        for (let j = 0; j < sideLength; j++) {
+        for (i = 0; i < field.length; i++) {
             const node = document.createElement("button");
             node.textContent = " ";    
 
@@ -53,9 +52,14 @@ const StartGame = () => {
             }
             
             
-            node.value = field[i][j];
+            node.value = field[row][i];
             node.style.fontFamily = 'Courier New, monospace';
-            // node.addEventListener ("click", tryHere);
+            if (node.value == "1") {
+                node.addEventListener("click", mine);
+            }
+            else {
+                node.addEventListener("click", safe);
+            }
             gameDiv.appendChild(node);
             indexNumber += 1
 
@@ -109,6 +113,14 @@ function creatingTheField(bombs, tiles) {
         arrRows.push(rows)
     }
     return arrRows;
+}
+
+function mine() {
+    alert("BOOM");
+}
+
+function safe() {
+    alert("safe");
 }
 
 const Start = document.getElementById("start");
