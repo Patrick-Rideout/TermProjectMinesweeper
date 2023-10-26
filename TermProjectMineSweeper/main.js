@@ -115,12 +115,20 @@ function creatingTheField(bombs, tiles) {
     return arrRows;
 }
 
-function mine() {
-    alert("BOOM");
+
+const mine = evt => { 
+    evt.target.style.backgroundColor = "red"
 }
 
-function safe() {
-    alert("safe");
+const safe = evt => { 
+    
+    if (evt.target.style.backgroundColor == "rgb(65, 105, 225)") {
+        evt.target.style.backgroundColor = "grey"
+    }
+    else if (evt.target.style.backgroundColor == "rgb(182, 208, 226)"){
+        evt.target.style.backgroundColor = "lightgrey"
+    }
+    
 }
 
 const Start = document.getElementById("start");
