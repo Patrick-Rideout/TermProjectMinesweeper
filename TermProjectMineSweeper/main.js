@@ -46,9 +46,8 @@ const StartGame = () => {
         else {
             colorShuffler = 0;
         }
-
         // Button creation.
-        for (i = 0; i < field.length; i++) {
+        for (i = 0; i < field.length-1; i++) {
             const node = document.createElement("button");
             node.textContent = " ";    
 
@@ -186,6 +185,9 @@ function creatingTheField(bombs, tiles) {
         rows = arr.splice(0, Math.sqrt(tiles))
         arrRows.push(rows)
     }
+
+    // Stupid bug makes the table print one row fewer then it should. This is just a throw away row.
+    arrRows.push('end')
     return arrRows;
 }
 
