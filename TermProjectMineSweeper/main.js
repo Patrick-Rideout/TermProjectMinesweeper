@@ -1,14 +1,20 @@
 const $ = selector => document.querySelector(selector);
 
 const StartGame = () => {
-    
-    stopTimer()
+
+    // Refreshes revealed tiles
+    revealed = 0
+    document.getElementById('revealed').innerHTML = revealed
+
+    // Resets timer
+    timer1 = stopTimer()
     startTimer()
+    
+    // Inputs difficulty and creates random field.
     let gameDiv = document.querySelector("#game");
     gameDiv.innerHTML = "";
     const difficulty = document.querySelector("#difficulty").value;
     let field;
-
     if (difficulty=="Beginner") {
         field = creatingTheField(10, 81);
     }
@@ -18,15 +24,15 @@ const StartGame = () => {
     }
     else if (difficulty=="Expert") {
         field = creatingTheField(99, 484);
-
     }
-    let indexNumber = 0;
     colorCode = 1;
     colorShuffler = 0;
 
 
     for (rowString in field) {
         let row = parseInt(rowString)
+
+        // Creates colored pattern shown in game
         if (difficulty=="Intermediate" || difficulty=="Expert") {
             if (colorShuffler == 0) {
                 colorShuffler += 1;
@@ -40,6 +46,8 @@ const StartGame = () => {
         else {
             colorShuffler = 0;
         }
+
+        // Button creation.
         for (i = 0; i < field.length; i++) {
             const node = document.createElement("button");
             node.textContent = " ";    
@@ -52,10 +60,11 @@ const StartGame = () => {
                 node.style.backgroundColor = "rgb(182, 208, 226)";
                 colorCode = 0;
             }
-            
-            
             node.value = field[row][i];
             node.style.fontFamily = 'Courier New, monospace';
+            // node.style.background = 'url("photos/joshtaylor.jpg")';
+
+            // Gives event listeners for mines and safe squares.
             if (field[row][i] == "b") {
                 node.addEventListener("click", mine);
                 // Remove
@@ -64,8 +73,9 @@ const StartGame = () => {
             else {
                 node.addEventListener("click", safe);
 
+                // Detects value of specified square to detect if bomb or not.
                 newNodeValue = 0;
-                
+
                 // TOP LEFT
                 if (row > 0 && i > 0) {
                     if (field[row-1][i-1] == "b") {
@@ -127,15 +137,10 @@ const StartGame = () => {
                 // Remove
                 node.textContent = newNodeValue;    
             }
-            
             gameDiv.appendChild(node);
-            indexNumber += 1
-
         }
-        gameDiv.appendChild(document.createElement("br"));
-        
+        gameDiv.appendChild(document.createElement("br"));   
     }
-
 }
 
 const startTimer = () => {
@@ -147,7 +152,7 @@ const startTimer = () => {
 }
 
 const stopTimer = () => {
-    let timer;
+
     clearInterval(timer);
 }
 
@@ -186,7 +191,9 @@ function creatingTheField(bombs, tiles) {
 
 
 const mine = evt => { 
+    alert('HERE');
     evt.target.style.backgroundColor = "red"
+    stopTimer();
 }
 
 const safe = evt => { 
@@ -196,6 +203,10 @@ const safe = evt => {
     else if (evt.target.style.backgroundColor == "rgb(182, 208, 226)"){
         evt.target.style.backgroundColor = "lightgrey"
     }
+    revealed += 1
+    document.getElementById('revealed').innerHTML = revealed
+    
+
     
 
 
