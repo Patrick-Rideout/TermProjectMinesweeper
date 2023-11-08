@@ -59,6 +59,8 @@ const StartGame = () => {
             }
             node.value = field[row][i];
             node.style.fontFamily = 'Courier New, monospace';
+            
+            node.addEventListener('contextmenu', flag);
 
             // Gives event listeners for mines and safe squares.
             if (field[row][i] == "b") {
@@ -130,7 +132,6 @@ const StartGame = () => {
                 }
 
                 node.value = newNodeValue;
-                // Remove
                 node.textContent = " ";    
             }
             gameDiv.appendChild(node);
@@ -183,134 +184,177 @@ function creatingTheField(bombs, tiles) {
     return arrRows;
 }
 
+const youWin = () => {
+    stopTimer();
+    let gameDiv = document.querySelector("#game");
+    gameDiv.innerHTML = "<h6>YOU WIN</h6>";
+}
+
 const flag = evt => { 
-    // WORK HERE
+    evt.preventDefault();
+    if (evt.target.style.background != 'url("photos/joshtaylor.jpg") 0% 0% / cover no-repeat') {
+        evt.target.style.background = "url(photos/joshtaylor.jpg)"; 
+        evt.target.style.backgroundSize = "cover";
+        evt.target.style.backgroundRepeat = "no-repeat";
+    }
+    else {
+        evt.target.style.background = ""; 
+        evt.target.style.backgroundColor = "rgb(65, 105, 225)";
+        
+    }
 }
 
 
 const mine = evt => { 
-    alert('HERE');
-    evt.target.style.backgroundColor = "red"
-    stopTimer();
+    if (evt.target.style.background != 'url("photos/joshtaylor.jpg") 0% 0% / cover no-repeat') {
+        alert('YOU LOSE');
+        evt.target.removeEventListener('click', mine);
+        evt.target.removeEventListener('contextmenu', flag);
+        evt.target.style.backgroundColor = "red"
+        stopTimer();
+        let gameDiv = document.querySelector("#game");
+        gameDiv.innerHTML = "<h5>YOU LOSE</h5>";
+    }
 }
 
 const safe = evt => { 
-    evt.target.removeEventListener('click', safe);
-    if (evt.target.style.backgroundColor == "rgb(65, 105, 225)") {
-        evt.target.style.backgroundColor = "grey"
-    }
-    else if (evt.target.style.backgroundColor == "rgb(182, 208, 226)"){
-        evt.target.style.backgroundColor = "lightgrey"
-    }
-    revealed += 1
-    document.getElementById('revealed').innerHTML = revealed
-    buttonPostion = evt.target.id.split(" ");
-    // row, i
-    let row = buttonPostion[0];
-    let i = buttonPostion[1];
-
-    const difficulty = document.querySelector("#difficulty").value;
-    let field = 0;
-    if (difficulty=="Beginner") {
-        field = 8;
-    }
-    else if (difficulty=="Intermediate") {
-        field = 16;
-    }
-    else if (difficulty=="Expert") {
-        field = 22;
-    }
-
-    if (evt.target.value == 0) {
-
-        let newRowVariable = 0;
-        let newIVariable = 0;
-        let newId =  " ";
-
-        // TOP LEFT
-        newRowVariable = parseInt(row)-1;
-        newIVariable = parseInt(i)-1;
-        if (newIVariable < 0 || newRowVariable < 0) {
+    if (evt.target.style.background != 'url("photos/joshtaylor.jpg") 0% 0% / cover no-repeat') {
+        evt.target.removeEventListener('click', safe);
+        evt.target.removeEventListener('contextmenu', flag);
+        if (evt.target.style.backgroundColor == "rgb(65, 105, 225)") {
+            evt.target.style.backgroundColor = "grey"
         }
-        else {
-            newId = newRowVariable + " " + newIVariable;
-            document.getElementById(newId).click();
+        else if (evt.target.style.backgroundColor == "rgb(182, 208, 226)"){
+            evt.target.style.backgroundColor = "lightgrey"
         }
+        revealed += 1
+        document.getElementById('revealed').innerHTML = revealed
+
         
-        // TOP
-        newRowVariable = parseInt(row)-1;
-        newIVariable = parseInt(i);
-        if (newRowVariable < 0) {
+
+        const difficulty = document.querySelector("#difficulty").value;
+        let field = 0;
+        if (difficulty=="Beginner") {
+            if (revealed == 71) {
+                youWin();
+            }
+            field = 8;
         }
-        else {
-            newId = newRowVariable + " " + newIVariable;
-            document.getElementById(newId).click();
+        else if (difficulty=="Intermediate") {
+            if (revealed == 216) {
+                youWin();
+            }
+            field = 16;
+        }
+        else if (difficulty=="Expert") {
+            if (revealed == 385) {
+                youWin();
+            }
+            field = 22;
         }
 
-        // TOP RIGHT
-        newRowVariable = parseInt(row)-1;
-        newIVariable = parseInt(i)+1;
-        if (newIVariable > field || newRowVariable < 0) {
-        }
-        else {
-            newId = newRowVariable + " " + newIVariable;
-            document.getElementById(newId).click();
-        }
+        buttonPostion = evt.target.id.split(" ");
+        // row, i
+        let row = buttonPostion[0];
+        let i = buttonPostion[1];
 
-        // LEFT
-        newRowVariable = parseInt(row);
-        newIVariable = parseInt(i)-1;
-        if (newIVariable < 0) {
-        }
-        else {
-            newId = newRowVariable + " " + newIVariable;
-            document.getElementById(newId).click();
-        }
+        if (evt.target.value == 0) {
 
-        // RIGHT
-        newRowVariable = parseInt(row);
-        newIVariable = parseInt(i)+1;
-        if (newIVariable > field) {
-        }
-        else {
-            newId = newRowVariable + " " + newIVariable;
-            document.getElementById(newId).click();
-        }
+            let newRowVariable = 0;
+            let newIVariable = 0;
+            let newId =  " ";
 
-        // BOTTOM LEFT
-        newRowVariable = parseInt(row)+1;
-        newIVariable = parseInt(i)-1;
-        if (newIVariable < 0 || newRowVariable > field) {
-        }
-        else {
-            newId = newRowVariable + " " + newIVariable;
-            document.getElementById(newId).click();
-        }
 
-        // BOTTOM
-        newRowVariable = parseInt(row)+1;
-        newIVariable = parseInt(i);
-        if (newRowVariable > field) {
+
+            // TOP LEFT
+            newRowVariable = parseInt(row)-1;
+            newIVariable = parseInt(i)-1;
+            if (newIVariable < 0 || newRowVariable < 0) {
+            }
+            else {
+                newId = newRowVariable + " " + newIVariable;
+                document.getElementById(newId).click();
+            }
+            
+            // TOP
+            newRowVariable = parseInt(row)-1;
+            newIVariable = parseInt(i);
+            if (newRowVariable < 0) {
+            }
+            else {
+                newId = newRowVariable + " " + newIVariable;
+                document.getElementById(newId).click();
+            }
+
+            // TOP RIGHT
+            newRowVariable = parseInt(row)-1;
+            newIVariable = parseInt(i)+1;
+            if (newIVariable > field || newRowVariable < 0) {
+            }
+            else {
+                newId = newRowVariable + " " + newIVariable;
+                document.getElementById(newId).click();
+            }
+
+            // LEFT
+            newRowVariable = parseInt(row);
+            newIVariable = parseInt(i)-1;
+            if (newIVariable < 0) {
+            }
+            else {
+                newId = newRowVariable + " " + newIVariable;
+                document.getElementById(newId).click();
+            }
+
+            // RIGHT
+            newRowVariable = parseInt(row);
+            newIVariable = parseInt(i)+1;
+            if (newIVariable > field) {
+            }
+            else {
+                newId = newRowVariable + " " + newIVariable;
+                document.getElementById(newId).click();
+            }
+
+            // BOTTOM LEFT
+            newRowVariable = parseInt(row)+1;
+            newIVariable = parseInt(i)-1;
+            if (newIVariable < 0 || newRowVariable > field) {
+            }
+            else {
+                newId = newRowVariable + " " + newIVariable;
+                document.getElementById(newId).click();
+            }
+
+            // BOTTOM
+            newRowVariable = parseInt(row)+1;
+            newIVariable = parseInt(i);
+            if (newRowVariable > field) {
+            }
+            else {
+                newId = newRowVariable + " " + newIVariable;
+                document.getElementById(newId).click();
+            }
+            
+            // BOTTOM RIGHT
+            newRowVariable = parseInt(row)+1;
+            newIVariable = parseInt(i)+1;
+            if (newIVariable > field || newRowVariable > field) {
+            }
+            else {
+                newId = newRowVariable + " " + newIVariable;
+                document.getElementById(newId).click();
+            }
+            evt.target.textContent =  " "
         }
         else {
-            newId = newRowVariable + " " + newIVariable;
-            document.getElementById(newId).click();
-        }
-        
-        // BOTTOM RIGHT
-        newRowVariable = parseInt(row)+1;
-        newIVariable = parseInt(i)+1;
-        if (newIVariable > field || newRowVariable > field) {
-        }
-        else {
-            newId = newRowVariable + " " + newIVariable;
-            document.getElementById(newId).click();
+            evt.target.textContent = evt.target.value;
         }
         
         
     }
     
-    evt.target.textContent = evt.target.value;
+    
 }
 
 const Start = document.getElementById("start");

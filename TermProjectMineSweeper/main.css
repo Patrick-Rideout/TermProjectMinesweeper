@@ -26,6 +26,8 @@ header {
     font-weight: bolder;
     padding: 0px;
     vertical-align: top;
+    padding-left: 0px;
+    padding-right: 0px;
 }
 
 footer {
@@ -61,6 +63,18 @@ h4 {
     font-family: 'Times New Roman', Times, serif;
     background-color: aliceblue;
     font-size: medium;
+}
+
+h5 {
+    color: darkred;
+    padding: 100px;
+    font-size: 150px;
+}
+
+h6 {
+    color: lightblue;
+    padding: 100px;
+    font-size: 150px;
 }
 
 #patch-notes {
