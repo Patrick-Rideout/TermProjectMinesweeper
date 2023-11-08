@@ -20,7 +20,12 @@ header {
 }
 
 #game button {
-    padding: 20px;
+    width: 32px;
+    height: 32px;
+    font-size: large;
+    font-weight: bolder;
+    padding: 0px;
+    vertical-align: top;
 }
 
 footer {

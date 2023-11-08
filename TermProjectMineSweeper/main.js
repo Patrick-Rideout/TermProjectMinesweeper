@@ -1,5 +1,3 @@
-const $ = selector => document.querySelector(selector);
-
 const StartGame = () => {
 
     // Refreshes revealed tiles
@@ -7,8 +5,8 @@ const StartGame = () => {
     document.getElementById('revealed').innerHTML = revealed
 
     // Resets timer
-    timer1 = stopTimer()
-    startTimer()
+    stopTimer();
+    startTimer();
     
     // Inputs difficulty and creates random field.
     let gameDiv = document.querySelector("#game");
@@ -61,17 +59,16 @@ const StartGame = () => {
             }
             node.value = field[row][i];
             node.style.fontFamily = 'Courier New, monospace';
-            // node.style.background = 'url("photos/joshtaylor.jpg")';
 
             // Gives event listeners for mines and safe squares.
             if (field[row][i] == "b") {
                 node.addEventListener("click", mine);
                 // Remove
-                node.textContent = "b";    
+                node.textContent = " ";    
             }
             else {
                 node.addEventListener("click", safe);
-
+                node.id = row + " " + i;
                 // Detects value of specified square to detect if bomb or not.
                 newNodeValue = 0;
 
@@ -134,7 +131,7 @@ const StartGame = () => {
 
                 node.value = newNodeValue;
                 // Remove
-                node.textContent = newNodeValue;    
+                node.textContent = " ";    
             }
             gameDiv.appendChild(node);
         }
@@ -143,21 +140,16 @@ const StartGame = () => {
 }
 
 const startTimer = () => {
+    timerDiv = document.getElementById('timer');
     var sec = 0;
-    let timer = setInterval(function(){
-        document.getElementById('timer').innerHTML = sec;
+    timer = setInterval(function() {
+        timerDiv.innerHTML = sec;
         sec++;
     }, 1000);
-}
+};
 
 const stopTimer = () => {
-
     clearInterval(timer);
-}
-
-
-const TilesDiscovered = () => {
-    alert("fawf")
 }
 
 function getRandomInt(min, max) {
@@ -191,6 +183,10 @@ function creatingTheField(bombs, tiles) {
     return arrRows;
 }
 
+const flag = evt => { 
+    // WORK HERE
+}
+
 
 const mine = evt => { 
     alert('HERE');
@@ -199,6 +195,7 @@ const mine = evt => {
 }
 
 const safe = evt => { 
+    evt.target.removeEventListener('click', safe);
     if (evt.target.style.backgroundColor == "rgb(65, 105, 225)") {
         evt.target.style.backgroundColor = "grey"
     }
@@ -207,11 +204,113 @@ const safe = evt => {
     }
     revealed += 1
     document.getElementById('revealed').innerHTML = revealed
+    buttonPostion = evt.target.id.split(" ");
+    // row, i
+    let row = buttonPostion[0];
+    let i = buttonPostion[1];
+
+    const difficulty = document.querySelector("#difficulty").value;
+    let field = 0;
+    if (difficulty=="Beginner") {
+        field = 8;
+    }
+    else if (difficulty=="Intermediate") {
+        field = 16;
+    }
+    else if (difficulty=="Expert") {
+        field = 22;
+    }
+
+    if (evt.target.value == 0) {
+
+        let newRowVariable = 0;
+        let newIVariable = 0;
+        let newId =  " ";
+
+        // TOP LEFT
+        newRowVariable = parseInt(row)-1;
+        newIVariable = parseInt(i)-1;
+        if (newIVariable < 0 || newRowVariable < 0) {
+        }
+        else {
+            newId = newRowVariable + " " + newIVariable;
+            document.getElementById(newId).click();
+        }
+        
+        // TOP
+        newRowVariable = parseInt(row)-1;
+        newIVariable = parseInt(i);
+        if (newRowVariable < 0) {
+        }
+        else {
+            newId = newRowVariable + " " + newIVariable;
+            document.getElementById(newId).click();
+        }
+
+        // TOP RIGHT
+        newRowVariable = parseInt(row)-1;
+        newIVariable = parseInt(i)+1;
+        if (newIVariable > field || newRowVariable < 0) {
+        }
+        else {
+            newId = newRowVariable + " " + newIVariable;
+            document.getElementById(newId).click();
+        }
+
+        // LEFT
+        newRowVariable = parseInt(row);
+        newIVariable = parseInt(i)-1;
+        if (newIVariable < 0) {
+        }
+        else {
+            newId = newRowVariable + " " + newIVariable;
+            document.getElementById(newId).click();
+        }
+
+        // RIGHT
+        newRowVariable = parseInt(row);
+        newIVariable = parseInt(i)+1;
+        if (newIVariable > field) {
+        }
+        else {
+            newId = newRowVariable + " " + newIVariable;
+            document.getElementById(newId).click();
+        }
+
+        // BOTTOM LEFT
+        newRowVariable = parseInt(row)+1;
+        newIVariable = parseInt(i)-1;
+        if (newIVariable < 0 || newRowVariable > field) {
+        }
+        else {
+            newId = newRowVariable + " " + newIVariable;
+            document.getElementById(newId).click();
+        }
+
+        // BOTTOM
+        newRowVariable = parseInt(row)+1;
+        newIVariable = parseInt(i);
+        if (newRowVariable > field) {
+        }
+        else {
+            newId = newRowVariable + " " + newIVariable;
+            document.getElementById(newId).click();
+        }
+        
+        // BOTTOM RIGHT
+        newRowVariable = parseInt(row)+1;
+        newIVariable = parseInt(i)+1;
+        if (newIVariable > field || newRowVariable > field) {
+        }
+        else {
+            newId = newRowVariable + " " + newIVariable;
+            document.getElementById(newId).click();
+        }
+        
+        
+    }
     
-
-    
-
-
+    evt.target.textContent = evt.target.value;
 }
 
 const Start = document.getElementById("start");
