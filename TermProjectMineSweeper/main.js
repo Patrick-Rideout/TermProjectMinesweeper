@@ -1,12 +1,12 @@
 const StartGame = () => {
 
-    // Refreshes revealed tiles
+    // Refreshes revealed tiles.
     revealed = 0
     document.getElementById('revealed').innerHTML = revealed
 
-    // Resets timer
-    stopTimer();
-    startTimer();
+    // Resets timer, Also uses an object!
+    Timer.stop();
+    Timer.start();
     
     // Inputs difficulty and creates random field.
     let gameDiv = document.querySelector("#game");
@@ -30,7 +30,7 @@ const StartGame = () => {
     for (rowString in field) {
         let row = parseInt(rowString)
 
-        // Creates colored pattern shown in game
+        // Creates colored pattern shown in game.
         if (difficulty=="Intermediate" || difficulty=="Expert") {
             if (colorShuffler == 0) {
                 colorShuffler += 1;
@@ -140,29 +140,35 @@ const StartGame = () => {
     }
 }
 
-const startTimer = () => {
-    timerDiv = document.getElementById('timer');
-    var sec = 0;
-    timer = setInterval(function() {
-        timerDiv.innerHTML = sec;
-        sec++;
-    }, 1000);
+// Timer object with start and stop functions.
+const Timer = {
+    timer: null,
+    start: function () {
+        const timerDiv = document.getElementById('timer');
+        let sec = 0;
+        this.timer = setInterval(function () {
+            timerDiv.innerHTML = sec;
+            sec++;
+        }, 1000);
+    },
+    stop: function () {
+        clearInterval(this.timer);
+    }
 };
 
-const stopTimer = () => {
-    clearInterval(timer);
-}
-
+// Random int generator.
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+// Array shuffler.
 function shuffle(array) {
     return array.sort(() => Math.random() - 0.5);
 }
 
+// Creates the playing field.
 function creatingTheField(bombs, tiles) {
     let arr = [];
     let arrRows = [];
@@ -184,16 +190,18 @@ function creatingTheField(bombs, tiles) {
     return arrRows;
 }
 
+// Displays "YOU WIN" and stops the timer.
 const youWin = () => {
-    stopTimer();
+    Timer.stop();
     let gameDiv = document.querySelector("#game");
     gameDiv.innerHTML = "<h6>YOU WIN</h6>";
 }
 
+// Flagging mechanic.
 const flag = evt => { 
     evt.preventDefault();
-    if (evt.target.style.background != 'url("photos/joshtaylor.jpg") 0% 0% / cover no-repeat') {
-        evt.target.style.background = "url(photos/joshtaylor.jpg)"; 
+    if (evt.target.style.background != 'url("photos/flagMinesweeper.png") 0% 0% / cover no-repeat') {
+        evt.target.style.background = "url(photos/flagMinesweeper.png)"; 
         evt.target.style.backgroundSize = "cover";
         evt.target.style.backgroundRepeat = "no-repeat";
     }
@@ -204,21 +212,22 @@ const flag = evt => {
     }
 }
 
-
+// Triggers if a mine is hit
 const mine = evt => { 
-    if (evt.target.style.background != 'url("photos/joshtaylor.jpg") 0% 0% / cover no-repeat') {
+    if (evt.target.style.background != 'url("photos/flagMinesweeper.png") 0% 0% / cover no-repeat') {
         alert('YOU LOSE');
         evt.target.removeEventListener('click', mine);
         evt.target.removeEventListener('contextmenu', flag);
         evt.target.style.backgroundColor = "red"
-        stopTimer();
+        Timer.stop();
         let gameDiv = document.querySelector("#game");
         gameDiv.innerHTML = "<h5>YOU LOSE</h5>";
     }
 }
 
+// Triggers if a safe square is hit
 const safe = evt => { 
-    if (evt.target.style.background != 'url("photos/joshtaylor.jpg") 0% 0% / cover no-repeat') {
+    if (evt.target.style.background != 'url("photos/flagMinesweeper.png") 0% 0% / cover no-repeat') {
         evt.target.removeEventListener('click', safe);
         evt.target.removeEventListener('contextmenu', flag);
         if (evt.target.style.backgroundColor == "rgb(65, 105, 225)") {
@@ -229,9 +238,6 @@ const safe = evt => {
         }
         revealed += 1
         document.getElementById('revealed').innerHTML = revealed
-
-        
-
         const difficulty = document.querySelector("#difficulty").value;
         let field = 0;
         if (difficulty=="Beginner") {
@@ -254,17 +260,14 @@ const safe = evt => {
         }
 
         buttonPostion = evt.target.id.split(" ");
-        // row, i
         let row = buttonPostion[0];
         let i = buttonPostion[1];
-
+        
+        // Triggers the recursion if a 0 square is hit.
         if (evt.target.value == 0) {
-
             let newRowVariable = 0;
             let newIVariable = 0;
             let newId =  " ";
-
-
 
             // TOP LEFT
             newRowVariable = parseInt(row)-1;

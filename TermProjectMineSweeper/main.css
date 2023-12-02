@@ -20,8 +20,8 @@ header {
 }
 
 #game button {
-    width: 32px;
-    height: 32px;
+    width: 26px;
+    height: 26px;
     font-size: large;
     font-weight: bolder;
     padding: 0px;
@@ -41,7 +41,7 @@ h1 {
     text-align: center;
     font-family: pixelFont;
     color: blue;
-    font-size: 75px;
+    font-size: 60px;
 }
 
 h2 {
